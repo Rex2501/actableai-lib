@@ -734,7 +734,7 @@ class AAIClassificationTask(AAIAutogluonTask):
         df = handle_boolean_features(df)
 
         # Determine GPU type
-        device = "gpu" if num_gpus == "auto" or num_gpus > 0 else "cpu"
+        device = "gpu" if num_gpus > 0 else "cpu"
 
         any_text_cols = df.apply(check_if_nlp_feature).any(axis=None)
         hyperparameters_space = self.get_hyperparameters_space(
