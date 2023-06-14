@@ -1,3 +1,4 @@
+import math
 import pandas as pd
 from typing import Any, Dict, List, Optional, Tuple
 import logging
@@ -36,7 +37,7 @@ class _AAIClassificationTrainTask(AAITask):
         biased_groups: List[str],
         debiased_features: List[str],
         residuals_hyperparameters: Optional[Dict],
-        num_gpus: float,
+        num_gpus: int,
         eval_metric: str,
         time_limit: Optional[int],
         drop_unique: bool,
@@ -137,6 +138,9 @@ class _AAIClassificationTrainTask(AAITask):
         from actableai.utils import debiasing_feature_generator_args
         from actableai.explanation.autogluon_explainer import AutoGluonShapTreeExplainer
         from actableai.classification.models import TabPFNModel
+
+        # AutoGluon expects integer input for num_gpus
+        num_gpus = math.ceil(num_gpus)
 
         # TODO: To finalise parameters
         hyperparameter_tune_kwargs = (
