@@ -148,8 +148,8 @@ class AAIDataImputationTask(AAITask):
         errors = raw_df.detect_error(*detectors)
         if not errors:
             return {
-                "messenger": "Unable to detect any errors",
-                "status": "FAILURE",
+                "messenger": "No errors detected",
+                "status": "SUCCESS",
                 "runtime": time.time() - start,
                 "data": {},
                 "validation": [],
