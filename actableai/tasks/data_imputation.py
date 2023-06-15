@@ -155,7 +155,7 @@ class AAIDataImputationTask(AAITask):
                 "validations": [
                     {
                         "name": "NoErrorDetected",
-                        "level": CheckLevels.INFO,
+                        "level": CheckLevels.WARNING,
                         "message": "No errors detected",
                     }
                 ],
