@@ -152,7 +152,7 @@ class AAIDataImputationTask(AAITask):
                 "status": "SUCCESS",
                 "runtime": time.time() - start,
                 "data": {},
-                "validation": [],
+                "validations": [],
             }
 
         def diff(x):
