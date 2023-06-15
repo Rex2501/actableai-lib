@@ -152,7 +152,13 @@ class AAIDataImputationTask(AAITask):
                 "status": "SUCCESS",
                 "runtime": time.time() - start,
                 "data": {},
-                "validations": [],
+                "validations": [
+                    {
+                        "name": "NoErrorDetected",
+                        "level": CheckLevels.INFO,
+                        "message": "No errors detected",
+                    }
+                ],
             }
 
         def diff(x):
