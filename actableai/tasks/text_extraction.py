@@ -128,7 +128,10 @@ class AAITextExtractionTask(AAITask):
                 "data": {},
             }
 
-        openai.api_key = parameters["oepnai_api_key"] or default_openai_api_key
+        openai.api_key = (
+            parameters["text_extraction_model"]["openai_api_key"]
+            or default_openai_api_key
+        )
         extracted_data = model.predict(data=df[text_column])
 
         def try_parse(data):
