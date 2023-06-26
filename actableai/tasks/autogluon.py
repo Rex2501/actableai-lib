@@ -154,7 +154,7 @@ class AAIAutogluonTask(AAITunableTask, ABC):
         available_models = cls.get_available_models(
             problem_type=problem_type,
             explain_samples=explain_samples,
-            gpu=True if device == "gpu" else False,
+            gpu=device == "gpu",
             ag_automm_enabled=ag_automm_enabled,
             tabpfn_enabled=tabpfn_enabled,
         )

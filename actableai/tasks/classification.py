@@ -1,3 +1,4 @@
+import math
 import pandas as pd
 from typing import Any, Dict, List, Optional, Tuple
 import logging
@@ -137,6 +138,9 @@ class _AAIClassificationTrainTask(AAITask):
         from actableai.utils import debiasing_feature_generator_args
         from actableai.explanation.autogluon_explainer import AutoGluonShapTreeExplainer
         from actableai.classification.models import TabPFNModel
+
+        # AutoGluon expects integer input for num_gpus
+        num_gpus = math.ceil(num_gpus)
 
         # TODO: To finalise parameters
         hyperparameter_tune_kwargs = (
@@ -515,7 +519,7 @@ class AAIClassificationTask(AAIAutogluonTask):
         cross_validation_max_concurrency: int = 1,
         residuals_hyperparameters: Optional[Dict] = None,
         drop_duplicates: bool = True,
-        num_gpus: int = 0,
+        num_gpus: float = 0,
         eval_metric: str = "accuracy",
         time_limit: Optional[int] = None,
         drop_unique: bool = True,
@@ -734,7 +738,7 @@ class AAIClassificationTask(AAIAutogluonTask):
         df = handle_boolean_features(df)
 
         # Determine GPU type
-        device = "gpu" if num_gpus == "auto" or num_gpus > 0 else "cpu"
+        device = "gpu" if num_gpus > 0 else "cpu"
 
         any_text_cols = df.apply(check_if_nlp_feature).any(axis=None)
         hyperparameters_space = self.get_hyperparameters_space(
