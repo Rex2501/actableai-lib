@@ -129,7 +129,21 @@ class AAITextExtractionTask(AAITask):
             }
 
         openai.api_key = model_parameters["openai_api_key"] or default_openai_api_key
-        extracted_data = model.predict(data=df[text_column])
+        try:
+            extracted_data = model.predict(data=df[text_column])
+        except Exception as e:
+            return {
+                "status": "FAILURE",
+                "validations": [
+                    {
+                        "name": "Text Extraction",
+                        "level": CheckLevels.CRITICAL,
+                        "message": f"Text Extraction failed with error: {e}",
+                    }
+                ],
+                "runtime": time.time() - start,
+                "data": {},
+            }
 
         def try_parse(data):
             try:
