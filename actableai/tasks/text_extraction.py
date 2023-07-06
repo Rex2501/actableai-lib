@@ -54,7 +54,7 @@ class AAITextExtractionTask(AAITask):
         df: DataFrame,
         document_name_column: str,
         text_column: str,
-        openai_api_key: str,
+        default_openai_api_key: str,
         openai_rate_limit_per_minute: float = None,
         parameters: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
@@ -128,9 +128,16 @@ class AAITextExtractionTask(AAITask):
                 "data": {},
             }
 
-        openai.api_key = openai_api_key
-
-        extracted_data = model.predict(data=df[text_column])
+        openai.api_key = model_parameters["openai_api_key"] or default_openai_api_key
+        try:
+            extracted_data = model.predict(data=df[text_column])
+        except Exception as e:
+            return {
+                "status": "FAILURE",
+                "messenger": f"Text Extraction failed with error: {e}",
+                "runtime": time.time() - start,
+                "data": {},
+            }
 
         def try_parse(data):
             try:
