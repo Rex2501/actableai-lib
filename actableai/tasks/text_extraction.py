@@ -134,13 +134,7 @@ class AAITextExtractionTask(AAITask):
         except Exception as e:
             return {
                 "status": "FAILURE",
-                "validations": [
-                    {
-                        "name": "Text Extraction",
-                        "level": CheckLevels.CRITICAL,
-                        "message": f"Text Extraction failed with error: {e}",
-                    }
-                ],
+                "messenger": f"Text Extraction failed with error: {e}",
                 "runtime": time.time() - start,
                 "data": {},
             }
