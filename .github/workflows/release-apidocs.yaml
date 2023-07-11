@@ -18,40 +18,26 @@ jobs:
           ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
           submodules: recursive
 
-      - name: Install Azure cli
-        run: |
-          sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg -y
-          curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-          AZ_REPO=$(lsb_release -cs)
-          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-          sudo apt-get update -y
-          sudo apt-get install azure-cli -y
-
-      - name: Azure login
-        id: login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Get the version
         id: get_version
         run: echo "::set-output name=tag::$(echo ${GITHUB_SHA} | cut -c1-8)"
 
-      - name: 'Build and Push Image to ACR'
-        uses: azure/docker-login@v1
+      - name: Login to Harbor registry
+        uses: docker/login-action@v2
         env:
           TAG: ${{ steps.get_version.outputs.tag }}
         with:
-          login-server: ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}
-          username: ${{ secrets.AZURE_REGISTRY_USERNAME }}
-          password: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+          registry: ${{ secrets.HARBOR_REGISTRY_SERVER }}
+          username: ${{ secrets.HARBOR_REGISTRY_USERNAME }}
+          password: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
       - name: Build and Publish image
         env:
+          HARBOR_PROJECT: actableai 
           TAG: ${{ steps.get_version.outputs.tag }}
         run: |
-          docker build -t ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/actableai-lib-docs:${{ env.TAG }}  -f docs.Dockerfile .
-          docker push ${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/actableai-lib-docs:${{ env.TAG }}
+          docker build -t ${{ secrets.HARBOR_REGISTRY_SERVER }}/${{ env.HARBOR_PROJECT }}/actableai-lib-docs:${{ env.TAG }}  -f docs.Dockerfile .
+          docker push ${{ secrets.HARBOR_REGISTRY_SERVER }}/${{ env.HARBOR_PROJECT }}/actableai-lib-docs:${{ env.TAG }}
 
       - name: Checkout GitOps repo
         uses: actions/checkout@v3
