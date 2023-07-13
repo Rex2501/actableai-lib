@@ -120,8 +120,8 @@ class AAIAutogluonTask(AAITunableTask, ABC):
     @classmethod
     def get_base_hyperparameters_space(
         cls,
-        df: pd.DataFrame,
         num_class: int,
+        dataset_len: int,
         problem_type: str,
         device: str = "cpu",
         explain_samples: bool = False,
@@ -134,6 +134,7 @@ class AAIAutogluonTask(AAITunableTask, ABC):
             df: DataFrame containing the features
             num_class: The number of classes in the target column ('-1' can be
                 used for regression which does not use classes)
+            dataset_len: The length of the dataset
             problem_type: The type of the problem
                 ('regression'/'quantile'/'multiclass'/'binary')
             device: Which device is being used, can be one of 'cpu' or 'gpu'.
@@ -158,8 +159,6 @@ class AAIAutogluonTask(AAITunableTask, ABC):
             ag_automm_enabled=ag_automm_enabled,
             tabpfn_enabled=tabpfn_enabled,
         )
-
-        dataset_len = df.shape[0]
 
         # TODO: Consider raising error if problem type is not supported, instead
         # of defaulting to classification

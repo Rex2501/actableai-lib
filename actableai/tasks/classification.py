@@ -398,8 +398,8 @@ class AAIClassificationTask(AAIAutogluonTask):
     @classmethod
     def get_hyperparameters_space(
         cls,
-        df: pd.DataFrame,
-        target: str,
+        num_class: int,
+        dataset_len: int,
         device: str = "cpu",
         explain_samples: bool = False,
         ag_automm_enabled: bool = False,
@@ -408,8 +408,7 @@ class AAIClassificationTask(AAIAutogluonTask):
         """Return the hyperparameters space of the task.
 
         Args:
-            df: DataFrame containing the features
-            target: The target feature name (column to be predicted)
+            num_class: Number of classes in the target column.
             device: Which device is being used, can be one of 'cpu' or 'gpu'.
             explain_samples: Boolean indicating if explanations for predictions
                 in test and validation will be generated.
@@ -420,16 +419,10 @@ class AAIClassificationTask(AAIAutogluonTask):
             Hyperparameters space represented as a ModelSpace.
         """
 
-        num_class = cls.get_num_class(df=df, target=target)
-
-        problem_type = cls.compute_problem_type(
-            df=df, target=target, num_class=num_class
-        )
-
         default_models, options = AAIAutogluonTask.get_base_hyperparameters_space(
-            df=df,
             num_class=num_class,
-            problem_type=problem_type,
+            dataset_len=dataset_len,
+            problem_type="binary" if num_class == 2 else "multiclass",
             device=device,
             explain_samples=explain_samples,
             ag_automm_enabled=ag_automm_enabled,
