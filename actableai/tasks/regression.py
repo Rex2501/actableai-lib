@@ -331,7 +331,7 @@ class AAIRegressionTask(AAIAutogluonTask):
     @classmethod
     def get_hyperparameters_space(
         cls,
-        df: pd.DataFrame,
+        dataset_len: int,
         prediction_quantiles: Optional[List[float]] = None,
         device: str = "cpu",
         explain_samples: bool = False,
@@ -341,7 +341,7 @@ class AAIRegressionTask(AAIAutogluonTask):
         """Return the hyperparameters space of the task.
 
         Args:
-            df: DataFrame containing the features
+            dataset_len: Length of the dataset.
             prediction_quantiles: List of quantiles (for regression task only),
                 as a percentage
             device: Which device is being used, can be one of 'cpu' or 'gpu'.
@@ -357,8 +357,8 @@ class AAIRegressionTask(AAIAutogluonTask):
         problem_type = cls.compute_problem_type(prediction_quantiles)
 
         default_models, options = AAIAutogluonTask.get_base_hyperparameters_space(
-            df=df,
             num_class=-1,
+            dataset_len=dataset_len,
             problem_type=problem_type,
             device=device,
             explain_samples=explain_samples,
