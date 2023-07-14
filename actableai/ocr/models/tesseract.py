@@ -92,7 +92,7 @@ class Tesseract(BaseOCRModel):
                         "value": 8,
                     },
                     "9": {
-                        "display_name": "Treat the image as a single word.",
+                        "display_name": "Treat the image as a single word in a circle.",
                         "value": 9,
                     },
                     "10": {
