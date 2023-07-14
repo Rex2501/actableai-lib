@@ -1,18 +1,15 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import Dict, List, Any, Union, TYPE_CHECKING, Type, Optional
+from typing import Dict, List, Any, Union, TYPE_CHECKING, Type
 
 from actableai.parameters.models import ModelSpace
-from actableai.parameters.parameters import Parameters
 
 if TYPE_CHECKING:
     from autogluon.core.models import AbstractModel
 
 from actableai.tasks.base import AAITunableTask
 from actableai.models.autogluon import Model
-
-import pandas as pd
 
 
 class AAIAutogluonTask(AAITunableTask, ABC):
@@ -120,8 +117,8 @@ class AAIAutogluonTask(AAITunableTask, ABC):
     @classmethod
     def get_base_hyperparameters_space(
         cls,
-        df: pd.DataFrame,
         num_class: int,
+        dataset_len: int,
         problem_type: str,
         device: str = "cpu",
         explain_samples: bool = False,
@@ -134,6 +131,7 @@ class AAIAutogluonTask(AAITunableTask, ABC):
             df: DataFrame containing the features
             num_class: The number of classes in the target column ('-1' can be
                 used for regression which does not use classes)
+            dataset_len: The length of the dataset
             problem_type: The type of the problem
                 ('regression'/'quantile'/'multiclass'/'binary')
             device: Which device is being used, can be one of 'cpu' or 'gpu'.
@@ -158,8 +156,6 @@ class AAIAutogluonTask(AAITunableTask, ABC):
             ag_automm_enabled=ag_automm_enabled,
             tabpfn_enabled=tabpfn_enabled,
         )
-
-        dataset_len = df.shape[0]
 
         # TODO: Consider raising error if problem type is not supported, instead
         # of defaulting to classification
