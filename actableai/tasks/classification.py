@@ -731,8 +731,8 @@ class AAIClassificationTask(AAIAutogluonTask):
 
         any_text_cols = df.apply(check_if_nlp_feature).any(axis=None)
         hyperparameters_space = self.get_hyperparameters_space(
-            df=df,
-            target=target,
+            num_class=df[target].nunique(),
+            dataset_len=len(df),
             device=device,
             explain_samples=explain_samples,
             ag_automm_enabled=ag_automm_enabled and any_text_cols,
