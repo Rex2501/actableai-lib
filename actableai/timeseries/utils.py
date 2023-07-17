@@ -152,6 +152,8 @@ def handle_datetime_column(
     """
     from pandas._libs.tslibs.parsing import guess_datetime_format
 
+    series = series[series.notna()]
+
     if pd.api.types.is_datetime64_ns_dtype(series):
         return series, "datetime"
 
