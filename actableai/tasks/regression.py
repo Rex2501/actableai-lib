@@ -651,7 +651,7 @@ class AAIRegressionTask(AAIAutogluonTask):
 
         any_text_cols = df.apply(check_if_nlp_feature).any(axis=None)
         hyperparameters_space = self.get_hyperparameters_space(
-            df=df,
+            dataset_len=df.shape[0],
             prediction_quantiles=prediction_quantiles,
             device=device,
             explain_samples=explain_samples,
