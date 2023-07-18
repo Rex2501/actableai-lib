@@ -47,6 +47,9 @@ def find_freq(pd_date: pd.Series, period: int = 10) -> Optional[str]:
     Returns:
         The frequency or None if not found.
     """
+
+    pd_date = pd.DatetimeIndex(pd_date)
+
     if len(pd_date) < 3:
         return None
 
