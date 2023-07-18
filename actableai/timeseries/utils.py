@@ -16,7 +16,15 @@ def interpolate(df: pd.DataFrame, freq: str) -> pd.DataFrame:
     Returns:
         Interpolated new DataFrame
     """
-    return df.resample(freq).interpolate(method="linear")
+    res = df.resample(freq).interpolate(method="linear")
+    # In some cases, the above operation can return NaNs. If so, use an
+    # alternate method. Note that the resultant values may differ from the
+    # original ones
+    if res.isnull().values.any():
+        oidx = df.index
+        nidx = pd.date_range(oidx.min(), oidx.max(), freq=freq)
+        res = df.reindex(oidx.union(nidx)).interpolate("index").reindex(nidx)
+    return res
 
 
 def find_gluonts_freq(pd_date: pd.Series, freq: str) -> str:
