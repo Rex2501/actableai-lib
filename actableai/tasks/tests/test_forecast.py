@@ -720,7 +720,7 @@ class TestTimeSeries:
             predicted_columns=target_columns,
             trials=1,
             use_ray=False,
-            # seed=20,
+            seed=20,
         )
 
         results2 = forecast_task.run(
@@ -730,7 +730,7 @@ class TestTimeSeries:
             predicted_columns=target_columns,
             trials=1,
             use_ray=False,
-            # seed=20,
+            seed=20,
         )
 
         assert results1["data_v2"]["predict"].equals(results2["data_v2"]["predict"])
