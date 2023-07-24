@@ -92,7 +92,7 @@ class Tesseract(BaseOCRModel):
                         "value": 8,
                     },
                     "9": {
-                        "display_name": "Treat the image as a single word.",
+                        "display_name": "Treat the image as a single word in a circle.",
                         "value": 9,
                     },
                     "10": {
@@ -136,7 +136,9 @@ class Tesseract(BaseOCRModel):
                 serve_handle.options(method_name="transform").remote(
                     image=image,
                     model_type=model_type,
-                    lang='+'.join(language_list) if isinstance(language_list, list) else language_list,
+                    lang="+".join(language_list)
+                    if isinstance(language_list, list)
+                    else language_list,
                     page_segmentation_mode=page_segmentation_mode,
                 )
             )
