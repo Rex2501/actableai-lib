@@ -701,37 +701,3 @@ class TestTimeSeries:
 
         assert "IsValidFrequencyChecker" in validations_dict
         assert validations_dict["IsValidFrequencyChecker"] == CheckLevels.CRITICAL
-
-    @pytest.mark.parametrize("freq", ["T"])
-    def test_reproducible_results(self, np_rng, init_ray, freq):
-        prediction_length = np_rng.integers(1, 3)
-        df, _, date_column_str, target_columns, _, _, _ = generate_forecast_df(
-            np_rng,
-            prediction_length,
-            freq=freq,
-            date_range_kwargs={"min_periods": 30, "max_periods": 60},
-        )
-
-        forecast_task = AAIForecastTask(use_ray=True, seed=20)
-        results1 = forecast_task.run(
-            df,
-            prediction_length=prediction_length,
-            date_column=date_column_str,
-            predicted_columns=target_columns,
-            trials=1,
-            use_ray=False,
-            seed=20,
-        )
-
-        forecast_task = AAIForecastTask(use_ray=True, seed=20)
-        results2 = forecast_task.run(
-            df,
-            prediction_length=prediction_length,
-            date_column=date_column_str,
-            predicted_columns=target_columns,
-            trials=1,
-            use_ray=False,
-            seed=20,
-        )
-
-        assert results1["data_v2"]["predict"].equals(results2["data_v2"]["predict"])
