@@ -712,7 +712,7 @@ class TestTimeSeries:
             date_range_kwargs={"min_periods": 30, "max_periods": 60},
         )
 
-        forecast_task = AAIForecastTask(use_ray=True)
+        forecast_task = AAIForecastTask(use_ray=True, seed=20)
         results1 = forecast_task.run(
             df,
             prediction_length=prediction_length,
@@ -723,6 +723,7 @@ class TestTimeSeries:
             seed=20,
         )
 
+        forecast_task = AAIForecastTask(use_ray=True, seed=20)
         results2 = forecast_task.run(
             df,
             prediction_length=prediction_length,
