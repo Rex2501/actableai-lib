@@ -171,7 +171,7 @@ class OutOfRangeError(ParameterValidationError):
         if values.get("min") is not None:
             message = f"{message}, minimum: `{values['min']}`"
         if values.get("max") is not None:
-            message = f"{message}, maximum (excluded): `{values['max']}`"
+            message = f"{message}, maximum: `{values['max']}`"
 
         return cls._process_message(message, values)
 

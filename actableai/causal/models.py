@@ -153,7 +153,11 @@ class AAICausalEstimator:
                     mc_iters = 10
                 if cv == "auto":
                     cv = 10
-                hyperparameters = {"LR": {}, PolynomialLinearPredictor: [{"degree": 2}]}
+                hyperparameters = {
+                    "RF": {},
+                    "LR": {"penalty": "l1"},
+                    PolynomialLinearPredictor: [{"degree": 2}],
+                }
             else:
                 hyperparameters = autogluon_hyperparameters()
 

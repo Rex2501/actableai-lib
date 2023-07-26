@@ -67,7 +67,7 @@ class _NumericParameter(ValueParameter[NumericT], GenericModel, Generic[NumericT
             return errors
 
         if (self.min is not None and value < self.min) or (
-            self.max is not None and value >= self.max
+            self.max is not None and value > self.max
         ):
             errors.add_error(
                 OutOfRangeError(
@@ -146,7 +146,7 @@ class _NumericListParameter(ListParameter[NumericT], GenericModel, Generic[Numer
 
         for val in value:
             if (self.min is not None and val < self.min) or (
-                self.max is not None and val >= self.max
+                self.max is not None and val > self.max
             ):
                 errors.add_error(
                     OutOfRangeError(

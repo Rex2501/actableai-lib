@@ -143,7 +143,7 @@ class ListParameter(BaseParameter, GenericModel, Generic[ListT]):
 
         value_len = len(value)
         if value_len < self.min_len or (
-            self.max_len is not None and value_len >= self.max_len
+            self.max_len is not None and value_len > self.max_len
         ):
             errors.add_error(
                 OutOfRangeError(
