@@ -1067,7 +1067,7 @@ class AAIClassificationTask(AAIAutogluonTask):
                 feature_prune=feature_prune,
                 feature_prune_time_limit=feature_prune_time_limit,
                 tabpfn_model_directory=tabpfn_model_directory,
-                num_trials=1,
+                num_trials=num_trials,
                 infer_limit=infer_limit,
                 infer_limit_batch_size=infer_limit_batch_size,
             )

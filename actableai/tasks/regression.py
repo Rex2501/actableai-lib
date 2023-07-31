@@ -1030,7 +1030,7 @@ class AAIRegressionTask(AAIAutogluonTask):
                 drop_useless_features=drop_useless_features,
                 feature_prune=feature_prune,
                 feature_prune_time_limit=feature_prune_time_limit,
-                num_trials=1,
+                num_trials=num_trials,
                 problem_type=problem_type,
                 infer_limit=infer_limit,
                 infer_limit_batch_size=infer_limit_batch_size,
