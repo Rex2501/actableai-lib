@@ -35,6 +35,7 @@ class AAITask(ABC):
         upload_model: bool = False,
         s3_models_bucket: Optional[str] = None,
         s3_models_prefix: Optional[str] = None,
+        seed=None,
     ):
         """
         AAITask Constructor
@@ -79,6 +80,8 @@ class AAITask(ABC):
             The AWS S3 bucket name where the models will be stored
         s3_models_prefix:
             The AWS S3 prefix to use when saving the models
+        seed:
+            The seed to use to control randomness and reproducibility of results
         """
         self.use_ray = use_ray
         self.ray_params = ray_params if ray_params is not None else {}
@@ -105,6 +108,8 @@ class AAITask(ABC):
         self.upload_model = upload_model
         self.s3_models_bucket = s3_models_bucket
         self.s3_models_prefix = s3_models_prefix
+
+        self.seed = seed
 
         if self.s3_models_prefix is None:
             self.s3_models_prefix = ""
@@ -248,6 +253,15 @@ class AAITask(ABC):
                 """
                 import logging
                 import tensorflow as tf
+
+                if task_object.seed is not None:
+                    # Note: This may increase computation time. See more
+                    # information at https://www.tensorflow.org/api_docs/python/tf/config/experimental/enable_op_determinism
+                    tf.compat.v1.disable_eager_execution()  # Necessary to set seed for tf on first run
+                    tf.config.experimental.enable_op_determinism()
+                    tf.keras.utils.set_random_seed(
+                        task_object.seed
+                    )  # Equivalent to calling random.seed(), np.random.seed(), and tf.random.set_seed()
 
                 gpus = tf.config.list_physical_devices("GPU")
                 if gpus is not None:

@@ -23,6 +23,11 @@ def classification_task():
     yield AAIClassificationTask(use_ray=False)
 
 
+@pytest.fixture(scope="function")
+def classification_task_seed(seed=0):
+    yield AAIClassificationTask(use_ray=False, seed=seed)
+
+
 def available_models(
     problem_type,
     gpu,
@@ -51,6 +56,28 @@ def run_classification_task(
         kwargs["hyperparameters"] = unittest_hyperparameters()
 
     return classification_task.run(
+        *args,
+        **kwargs,
+        presets="medium_quality_faster_train",
+        model_directory=tmp_path,
+        residuals_hyperparameters=unittest_autogluon_hyperparameters(),
+        drop_duplicates=drop_duplicates,
+        drop_unique=False,
+        drop_useless_features=False,
+    )
+
+
+def run_classification_task_seed(
+    classification_task_seed: AAIClassificationTask,
+    tmp_path,
+    *args,
+    drop_duplicates=False,
+    **kwargs,
+):
+    if "hyperparameters" not in kwargs:
+        kwargs["hyperparameters"] = unittest_hyperparameters()
+
+    return classification_task_seed.run(
         *args,
         **kwargs,
         presets="medium_quality_faster_train",
@@ -1259,6 +1286,81 @@ class TestRemoteClassification:
         )
 
         assert r["status"] == "SUCCESS"
+
+    def test_reproducible_results(
+        self, classification_task_seed, tmp_path, is_gpu_available
+    ):
+        """Check if two tasks run with the same seed yield the same results"""
+
+        df = pd.DataFrame(
+            {
+                "x": [1, 2, 3, 4, 5, None, None, 8, 9, 10] * 3,
+                "b": [
+                    "a a a",
+                    "b b b",
+                    "c c c",
+                    "d d d",
+                    "b b b",
+                    "c c c",
+                    "a a a",
+                    "a a a",
+                    "c c c",
+                    "a a a",
+                ]
+                * 3,
+                "y": [1, 2, 3, 3, 1, 2, 1, 1, 3, 2] * 3,
+            }
+        )
+
+        features = ["x", "b"]
+
+        r1 = run_classification_task_seed(
+            classification_task_seed,
+            tmp_path,
+            df,
+            target="y",
+            features=features,
+            ag_automm_enabled=True,
+            num_gpus=1 if is_gpu_available else 0,
+            num_trials=2,
+            validation_ratio=0.5,
+        )
+        r2 = run_classification_task_seed(
+            classification_task_seed,
+            tmp_path,
+            df,
+            target="y",
+            features=features,
+            ag_automm_enabled=True,
+            num_gpus=1 if is_gpu_available else 0,
+            num_trials=2,
+            validation_ratio=0.5,
+        )
+
+        r1 = r1["data"]["leaderboard"].drop(
+            [
+                "pred_time_val",
+                "fit_time",
+                "pred_time_val_marginal",
+                "fit_time_marginal",
+                "compile_time",
+            ],
+            axis=1,
+        )
+        r2 = r2["data"]["leaderboard"].drop(
+            [
+                "pred_time_val",
+                "fit_time",
+                "pred_time_val_marginal",
+                "fit_time_marginal",
+                "compile_time",
+            ],
+            axis=1,
+        )
+
+        assert r1.sort_values(by=["score_val", "model"], ignore_index=True).equals(
+            r2.sort_values(by=["score_val", "model"], ignore_index=True)
+        )
 
 
 class TestRemoteClassificationCrossValidation:
