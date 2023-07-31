@@ -23,6 +23,11 @@ def regression_task():
 
 
 @pytest.fixture(scope="function")
+def regression_task_seed(seed=0):
+    yield AAIRegressionTask(use_ray=False, seed=seed)
+
+
+@pytest.fixture(scope="function")
 def data():
     yield pd.DataFrame(
         {
@@ -45,6 +50,29 @@ def run_regression_task(
         kwargs["num_trials"] = 1
 
     return regression_task.run(
+        *args,
+        **kwargs,
+        presets="medium_quality_faster_train",
+        model_directory=tmp_path,
+        residuals_hyperparameters=unittest_autogluon_hyperparameters(),
+        drop_unique=False,
+        drop_useless_features=False,
+    )
+
+
+def run_regression_task_seed(
+    regression_task_seed: AAIRegressionTask, tmp_path, *args, **kwargs
+) -> Dict[str, Any]:
+    if "hyperparameters" not in kwargs:
+        kwargs["hyperparameters"] = unittest_hyperparameters()
+
+    if "drop_duplicates" not in kwargs:
+        kwargs["drop_duplicates"] = False
+
+    if "num_trials" not in kwargs:
+        kwargs["num_trials"] = 1
+
+    return regression_task_seed.run(
         *args,
         **kwargs,
         presets="medium_quality_faster_train",
@@ -1034,6 +1062,82 @@ class TestRemoteRegression:
         )
 
         assert r["status"] == "SUCCESS"
+
+    def test_reproducible_results(
+        self, regression_task_seed, tmp_path, is_gpu_available
+    ):
+        """Check if two tasks run with the same seed yield the same results"""
+
+        df = pd.DataFrame(
+            {
+                "x": [1, 2, 3, 4, 5, None, None, 8, 9, 10] * 2,
+                "b": [
+                    "a a a",
+                    "b b b",
+                    "c c c",
+                    "d d d",
+                    "b b b",
+                    "c c c",
+                    "a a a",
+                    "a a a",
+                    "c c c",
+                    "e e e",
+                ]
+                * 2,
+                "y": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] * 2,
+            }
+        )
+
+        features = ["y", "b"]
+
+        r1 = run_regression_task_seed(
+            regression_task_seed,
+            tmp_path,
+            df,
+            target="x",
+            features=features,
+            prediction_quantiles=[5, 50, 95],
+            ag_automm_enabled=True,
+            num_gpus=1 if is_gpu_available else 0,
+            num_trials=2,
+        )
+
+        r2 = run_regression_task_seed(
+            regression_task_seed,
+            tmp_path,
+            df,
+            target="x",
+            features=features,
+            prediction_quantiles=[5, 50, 95],
+            ag_automm_enabled=True,
+            num_gpus=1 if is_gpu_available else 0,
+            num_trials=2,
+        )
+
+        r1 = r1["data"]["leaderboard"].drop(
+            [
+                "pred_time_val",
+                "fit_time",
+                "pred_time_val_marginal",
+                "fit_time_marginal",
+                "compile_time",
+            ],
+            axis=1,
+        )
+        r2 = r2["data"]["leaderboard"].drop(
+            [
+                "pred_time_val",
+                "fit_time",
+                "pred_time_val_marginal",
+                "fit_time_marginal",
+                "compile_time",
+            ],
+            axis=1,
+        )
+
+        assert r1.sort_values(by=["score_val", "model"], ignore_index=True).equals(
+            r2.sort_values(by=["score_val", "model"], ignore_index=True)
+        )
 
 
 class TestRemoteRegressionCrossValidation:
