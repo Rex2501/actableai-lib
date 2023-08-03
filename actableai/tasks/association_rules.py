@@ -38,7 +38,7 @@ class AAIAssociationRulesTask(AAITask):
 
         Examples:
             >>> import pandas as pd
-            >>> from actableai import AssociationRulesTask
+            >>> from actableai.tasks.association_rules import AssociationRulesTask
             >>> df = pd.read_csv("path/to/data.csv")
             >>> result = AssociationRulesTask().run(
             ...     df,

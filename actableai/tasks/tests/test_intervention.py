@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from actableai import AAIInterventionTask
+from actableai.tasks.intervention import AAIInterventionTask
 from actableai.utils.testing import unittest_autogluon_hyperparameters
 
 
