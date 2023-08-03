@@ -116,7 +116,7 @@ You can also replace `[gpu]` with `[cpu]` to use the cpu only version.
 
 ```python
 import pandas as pd
-from actableai import AAIClassificationTask
+from actableai.tasks.classification import AAIClassificationTask
 
 df = pd.read_csv("path/to/dataframe.csv")
 result = AAIClassificationTask().run(
@@ -129,7 +129,7 @@ result = AAIClassificationTask().run(
 
 ```python
 import pandas as pd
-from actableai import AAICorrelationTask
+from actableai.tasks.correlation import AAICorrelationTask
 
 df = pd.read_csv("path/to/dataframe.csv")
 result = AAICorrelationTask().run(
@@ -191,8 +191,8 @@ Project Link: [https://github.com/Actable-AI/actableai-lib](https://github.com/A
 For any question about the ML Library feel free to send us a message :
 
 * trung@actable.ai
-* axeng@actable.ai
-* mehdib@actable.ai
+* christiang@actable.ai
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
