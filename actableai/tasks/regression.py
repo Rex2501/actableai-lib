@@ -562,7 +562,7 @@ class AAIRegressionTask(AAIAutogluonTask):
             CheckLevels,
             UNIQUE_CATEGORY_THRESHOLD,
         )
-        from actableai import AAIInterventionTask
+        from actableai.tasks.intervention import AAIInterventionTask
         from actableai.models.aai_predictor import (
             AAITabularModel,
             AAITabularModelInterventional,
