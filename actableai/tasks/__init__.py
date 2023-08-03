@@ -1,5 +1,20 @@
 from enum import Enum, unique
 
+from .association_rules import AAIAssociationRulesTask
+from .bayesian_regression import AAIBayesianRegressionTask
+from .causal_inference import AAICausalInferenceTask
+from .classification import AAIClassificationTask
+from .clustering import AAIClusteringTask
+from .correlation import AAICorrelationTask
+from .data_imputation import AAIDataImputationTask
+from .forecast import AAIForecastTask
+from .intervention import AAIInterventionTask
+from .regression import AAIRegressionTask
+from .sentiment_analysis import AAISentimentAnalysisTask
+from .causal_discovery import AAICausalDiscoveryTask
+from .ocr import AAIOCRTask
+from .text_extraction import AAITextExtractionTask
+
 
 @unique
 class TaskType(str, Enum):
