@@ -652,7 +652,7 @@ class AAIClassificationTask(AAIAutogluonTask):
             CLASSIFICATION_MINIMUM_NUMBER_OF_CLASS_SAMPLE,
             UNIQUE_CATEGORY_THRESHOLD,
         )
-        from actableai import AAIInterventionTask
+        from actableai.tasks.intervention import AAIInterventionTask
         from actableai.models.aai_predictor import (
             AAITabularModel,
             AAITabularModelInterventional,

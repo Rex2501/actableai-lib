@@ -60,7 +60,7 @@ class AAIInterventionTask(AAITask):
 
         Examples:
             >>> import pandas as pd
-            >>> from actableai import AAIInterventionTask
+            >>> from actableai.tasks.intervention import AAIInterventionTask
             >>> df = pd.read_csv("path/to/csv")
             >>> result = AAIInterventionTask().run(
             ...     df,

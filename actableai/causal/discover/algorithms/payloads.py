@@ -71,7 +71,7 @@ class CausalDiscoveryPayload(BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
-    @root_validator()
+    @root_validator(allow_reuse=True)
     def set_causal_variables(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         causal_variables = values["causal_variables"]
         set_variables = {causal_variable.name for causal_variable in causal_variables}

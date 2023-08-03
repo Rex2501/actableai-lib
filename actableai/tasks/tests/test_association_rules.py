@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 
-from actableai import AAIAssociationRulesTask
+from actableai.tasks.association_rules import AAIAssociationRulesTask
 from actableai.data_validation.base import CheckLevels
 
 
